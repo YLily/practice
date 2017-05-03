@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    	<meta charset="utf-8" />
+    	<title>grid</title>
+    	<link rel="stylesheet" href="css/gird.css"></link>
+	      <script src="js/jquery-1.9.1.min.js"></script>
+    </head>
+    <body>
+	      <div id="example"></div>
+	      <script>
+  	        /*log(a,x)是以a为底,x的对数
+  	    		 *换底公式：log(a,x)=lnx/lna
+  	    		
+  	    		 *Math.log(x)   数学 lnx
+  	    		 *Math.LN2  2 的自然对数  ln2
+  	    		
+  	    		 *Math.pow(x,y) 返回 x 的 y 次幂的值
+  	    		*/
+  	    		
+  	    		/*
+  	    		 	play = [
+  	    		 			[
+                      [1,{},{}],[2,{},{}],[3,{},{}]
+                  ],
+                  []
+
+  	    		 	]
+  	    		 * 
+  	    		 * 
+  	    		 * 
+  	    		 * */
+						
+  	    		var num = 16;
+  	    		var play = [];
+  	    		var allRound = Math.ceil(Math.log(num)/Math.LN2);//得到比赛总轮次
+  	    		for(var i = allRound, j = 0; i > 0; i--, j++){
+  	    			var groupNum = Math.pow(2,i)/2;  //每轮group数
+  	    			var round = [];
+  	    			for(var j = 0; j< groupNum; j++){	    
+                		round.push({"group_id":j+1, "playerA": 1, "playerB": 2});
+                    console.log(round);
+  	    			}
+              play.push(round);
+  	    		}
+
+            $.ajax({
+				url :'grid.txt',
+				type :'get',
+				dataType :'json',
+				async: false,
+				data :{
+					method : 'GetJincai2',
+					GameId :"gameId",
+					State :0
+				},
+				success : function(data){
+					$.each(data.match.play, function(k,v){
+						play[v.promtion_state][v.group_id-1].push(v);
+					})
+										
+				}
+			});/*ajax结束*/
+
+           
+  					var str = '',last = play.length -1;
+  					$.each(play,function(i,n){
+              str +='<div class="grid-round grid-row-'+parseInt(i+1)+'">'; 
+                $.each(n,function(k,v){
+                		if(i === last){
+                				str +='<div class="one-match">';
+                		}else{
+                				if(k%2 === 0){
+		                        str +='<div class="one-match line-to-right-down match-finished">';
+		                    }else if(k%2 ===1){
+		                        str +='<div class="one-match line-to-right-up match-finished">';
+		                    }
+                		}                   
+                    str += '<div class="players">';
+                    str += getDom(v[1]);
+                    if(v[1] && v[1].play_state === 7){
+                         str +='<div class="match-content"><a href="">比赛已结束</a></div>';
+                    }else if(v[1]){
+                         str +='<div class="match-content"><a href="">比赛进行中</a></div>';
+                    }else{
+                      	str +='<div class="match-content"></div>';
+                    }
+                   
+                    str += getDom(v[2]);
+                    str += '</div>';
+                    str += '</div>';
+                })
+              str += '</div>';  						
+  					})
+            $("#example").html(str);
+  				
+  					
+  				
+  				  	  
+  	        function getDom(v){
+  	        	  var Html = ''; 
+  	        	  if(v){
+	  	        	  	if(v.winner){
+	  	  	      		  	Html +='<a class="player player-winner" attr="'+v.user_id+'">';//赢的加上player-winner
+		  	  	      	}else{
+		  	  	      		  Html +='<a class="player" attr="'+v.user_id+'">';
+		  	  	      	}
+		  	            Html +='<span class="player-name">'+v.username+'</span>';
+		  	            Html +='<span class="player-score">'+v.score+'</span>';
+		  	            Html +='</a>';
+  	        	  }else{
+  	  	      		  Html +='<a class="player"></a>';
+  	        	  }
+  	  	      	 
+  	            return Html;
+  	        }
+        </script>
+    </body>
+</html>

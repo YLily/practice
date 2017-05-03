@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>grid</title>
+    	<link rel="stylesheet" href="css/gird.css"></link>
+	</head>
+	<body>
+		<div id="grid"></div>
+		<script src="http://cdn.bootcss.com/react/0.13.3/react.min.js"></script>
+		<script src="src/bundle.js"></script>
+		<script src="myjs/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				$("#grid").find("a[data-id != '']").hover(function(){
+			        $(this).addClass('player-hover');
+			        $("#grid").find("a[data-id = "+$(this).attr('data-id')+"]").addClass("player-hover");
+			    },function(){
+			        $(this).removeClass('player-hover');
+			        $("#grid").find("a[data-id = "+$(this).attr('data-id')+"]").removeClass("player-hover");
+			    })
+			})
+		</script>
+	</body>
+</html>
